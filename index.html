@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro-Con Bot | Be confident in your decisions</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1 class="header-title">Pro-Con Bot</h1>
+        <p class="header-subtitle">Be confident in your decisions.</p>
+    </header>
+
+    <main>
+        <section class="subject-entry-section">
+            <label for="subject-entry">What's your decision about?</label>
+            <input type="text" id="subject-entry" aria-label="Subject Entry" placeholder="Enter subject">
+        </section>
+
+        <section class="pro-con-section">
+            <div class="pro-con-entry">
+                <label for="pro-entry">Pros:</label>
+                <input type="text" id="pro-entry" aria-label="Pro Entry" placeholder="Enter a pro"><br><br>
+                <label for="add-pro-button">(Leave blank to automatically generate a pro)</label>
+                <button id="add-pro-button">Add Pro</button>
+            </div>
+
+            <div class="pro-con-entry">
+                <label for="con-entry">Cons:</label>
+                <input type="text" id="con-entry" aria-label="Con Entry" placeholder="Enter a con"><br><br>
+                <label for="add-con-button">(Leave blank to automatically generate a con)</label>
+                <button id="add-con-button">Add Con</button>
+            </div>
+        </section>
+        <section class="table-section">
+            <div class="pro-table">
+                <h3>Pros | What It Means</h3>
+                <table id="pros-table" aria-label="Pro Table">
+                    <tr>
+                        <th>Pro</th>
+                        <th>Description</th>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section class="table-section">
+            <div class="con-table">
+                <h3>Cons | What It Means</h3>
+                <table id="cons-table" aria-label="Con Table">
+                    <tr>
+                        <th>Con</th>
+                        <th>Description</th>
+                    </tr>
+                </table>
+            </div>
+        </section>
+        <section class="insights-section">
+            <h3>Insights</h3>
+            <textarea id="insights-text" aria-label="Insights Text" rows="3"
+                placeholder="AI's insights will go here"></textarea>
+        </section>
+
+        <section class="questions-section">
+            <h3>Questions</h3>
+            <textarea id="questions-text" aria-label="Questions Text" rows="3"
+                placeholder="AI's questions will go here"></textarea>
+        </section>
+        <section class="reset-section">
+            <button id="reset-button">Start Over</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>Powered by AI. Designed for You.</p>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,164 @@
+/* General Settings */
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background: #f4f4f4;
+    color: #333;
+  }
+  
+  header, main, footer {
+    max-width: 960px;
+    margin: auto;
+    padding: 1em;
+  }
+  
+  h1, h3 {
+    color: #30475E;
+  }
+  
+  /* Header Section */
+  .header-title {
+    text-align: center;
+    font-size: 2.5em;
+    color: #222831;
+    margin-bottom: 0.5em;
+  }
+  
+  .header-subtitle {
+    text-align: center;
+    font-size: 1.2em;
+    color: #6D6875;
+  }
+  
+  /* Subject Entry Section */
+  .subject-entry-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2em;
+  }
+  
+  .subject-entry-section label {
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+  }
+  
+  .subject-entry-section input {
+    padding: 1em;
+    border: none;
+    border-radius: 0.5em;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 50%;
+  }
+  
+  /* Pro Con Section */
+  .pro-con-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2em;
+  }
+  
+  .pro-con-entry {
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+  }
+  
+  .pro-con-entry label {
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+  }
+  
+  .pro-con-entry .helper-text {
+    font-size: 0.9em;
+    color: #6D6875;
+    margin-bottom: 0.5em;
+  }
+  
+  .pro-con-entry input {
+    padding: 1em;
+    border: none;
+    border-radius: 0.5em;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1em;
+    width: 100%;
+  }
+  
+  .pro-con-entry button {
+    padding: 0.5em;
+    background-color: #30475E;
+    color: #F4F1DE;
+    border: none;
+    border-radius: 0.5em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .pro-con-entry button:hover {
+    background-color: #222831;
+  }
+  
+  /* Table Section */
+  .table-section {
+    margin-bottom: 2em;
+  }
+  
+  .pro-table, .con-table {
+    background: #F4F1DE;
+    border-radius: 0.5em;
+    padding: 1em;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .pro-table table, .con-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .pro-table th, .con-table th, .pro-table td, .con-table td {
+    border: 1px solid #333;
+    padding: 0.5em;
+  }
+  
+  /* Insights and Questions Sections */
+  .insights-section textarea, .questions-section textarea {
+    width: 100%;
+    padding: 1em;
+    border: none;
+    border-radius: 0.5em;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  .reset-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 2em;
+  }
+  
+  #reset-button {
+    padding: 0.7em 1.2em;
+    background-color: #E63946;
+    color: #F4F1DE;
+    border: none;
+    border-radius: 0.5em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1.1em;
+  }
+  
+  #reset-button:hover {
+    background-color: #B33343;
+  }
+  
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 1em;
+    background: #30475E;
+    color: #F4F1DE;
+  }
+  
