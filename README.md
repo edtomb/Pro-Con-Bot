@@ -1,4 +1,4 @@
-# ProConBot: be confident in your decisions 
+# Pro-Con Bot: Be confident in your decisions 
 
 ![ProConBot Title](./images/proConBot_Title.png)
 
