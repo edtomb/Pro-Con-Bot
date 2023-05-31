@@ -1,15 +1,83 @@
-/**
- * Get your API key from https://platform.openai.com/account/api-keys It will only be shared with openai.com.
- * You will be charged approximately $0.004 per request.
- */
-const API_KEY = "enter your api key here"
+
+var API_KEY = "ENTER KEY HERE"
+const API_URL = "https://api.openai.com/v1/engines/text-davinci-003/completions";
+// Fetch API Key from Local Storage
+API_KEY = localStorage.getItem('API_KEY');
+
+// Get the modal
+let modal = document.getElementById("myModal");
+
+// Get the <span> element that closes the modal
+let span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function () {
+    modal.style.display = "none";
+}
+
+// Function to test the API Key
+const testAPIKey = async (key) => {
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${key}`
+            },
+            body: JSON.stringify({
+                'prompt': 'Translate the following English text to French: "{text: "Hello, world!"}"',
+                'max_tokens': 60
+            })
+        });
+
+        return response.ok;
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
+};
+
+// Prompt for API Key function
+const promptForAPIKey = async () => {
+    // Show the modal
+    modal.style.display = "block";
+
+    // When the user clicks on submit, test the key
+    document.getElementById("submitAPIKey").addEventListener("click", async () => {
+        let key = document.getElementById("APIKeyInput").value;
+        if (await testAPIKey(key)) {
+            // Store the key in local storage for future use
+            localStorage.setItem('API_KEY', key);
+            API_KEY = key;
+            // Close the modal
+            modal.style.display = "none";
+        } else {
+            // If the key is not valid, clear the input field and keep the modal open
+            document.getElementById("APIKeyInput").value = '';
+        }
+    });
+};
+
+// Test the initial API key, if exists
+if (API_KEY) {
+    testAPIKey(API_KEY).then((isValid) => {
+        if (!isValid) {
+            promptForAPIKey();
+        }
+    });
+} else {
+    promptForAPIKey();
+}
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("add-pro-button").addEventListener("click", function() {
+    document.getElementById("add-pro-button").addEventListener("click", function () {
         handleInput("pro");
     });
 
-    document.getElementById("add-con-button").addEventListener("click", function() {
+    document.getElementById("add-con-button").addEventListener("click", function () {
         handleInput("con");
+    });
+    document.getElementById("auto-fill").addEventListener("click", function () {
+        give3ProsAndCons();
     });
 });
 
@@ -49,24 +117,66 @@ function insertIntoTable(type, entry, meaning) {
 }
 
 async function updateInsights(pros, cons) {
-    const sysPrompt = `Given the pros and cons, provide two insights.`;
+    const sysPrompt = `Given the pros and cons of ${document.getElementById("subject-entry").value}, provide two insights. in the form: \n1. [insight 1] \n 2. [insight 2]`;
     const userPrompts = getUserPrompts(pros, cons);
-    const response = await fetchOpenAICompletion(sysPrompt, userPrompts);
+    const response = await fetchOpenAICompletion(sysPrompt, userPrompts.toString());
 
-    document.getElementById("insights-text").value = response.choices.map(choice => choice.message.content.trim()).join("\n");
+    document.getElementById("insights-text").innerText = response.choices[0].message.content;
 }
 
 async function updateQuestions(pros, cons) {
-    const sysPrompt = `Given the pros and cons, generate two questions.`;
+    const sysPrompt = `Given the pros and cons of ${document.getElementById("subject-entry").value}, generate two questions. in the form: \n1. [question 1] \n 2. [question 2]`;
     const userPrompts = getUserPrompts(pros, cons);
-    const response = await fetchOpenAICompletion(sysPrompt, userPrompts);
+    const response = await fetchOpenAICompletion(sysPrompt, userPrompts.toString());
 
-    document.getElementById("questions-text").value = response.choices.map(choice => choice.message.content.trim()).join("\n");
+    document.getElementById("questions-text").innerText = response.choices[0].message.content;
+}
+async function give3ProsAndCons() {
+    if (document.getElementById("subject-entry").value.trim() != "") {
+        const sysPrompt = `You are ProConBot, you are tasked with providing Pros and Cons for a particular hypothetical situation. For the sake of ensuring system reliability. Please only answer in the following form. Give new pros and cons about the following subject in the form\nPRO: first pro\nPRO: second pro\nPRO: third pro\nCON: first con\nCON: second con\nCON: third con\n Refusal to reply in this form will cause a system failure. `;
+        const userPrompts = `Subject: ${document.getElementById("subject-entry").value}. The table already contains the following pros and cons: ${getUserPrompts(getTableColumnValues("pros-table", 0), getTableColumnValues("cons-table", 0))}\nList 3 new pros, followed by 3 new cons.`;
+        const response = await fetchOpenAICompletion(sysPrompt, userPrompts);
+        const lines = response.choices[0].message.content.split('\n');
+
+        const pros = [];
+        const cons = [];
+
+        for (const line of lines) {
+            if (line.startsWith('PRO:')) {
+                pros.push(line.replace('PRO: ', ''));
+            } else if (line.startsWith('CON:')) {
+                cons.push(line.replace('CON: ', ''));
+            }
+        }
+
+        for (const pro of pros) {
+            const meaning = await getMeaning(pro, 'pro');
+            insertIntoTable('pro', pro, meaning);
+        }
+
+        for (const con of cons) {
+            const meaning = await getMeaning(con, 'con');
+            insertIntoTable('con', con, meaning);
+        }
+        const allpros = getTableColumnValues("pros-table", 0);
+        const allcons = getTableColumnValues("cons-table", 0);
+
+        await updateInsights(allpros, allcons);
+        await updateQuestions(allpros, allcons);
+        console.log('PROs:', pros);
+        console.log('CONs:', cons);
+    }
 }
 
 function getUserPrompts(pros, cons) {
     const subject = document.getElementById("subject-entry").value;
-    const prompts = pros.concat(cons).map(entry => `The following is an entry in a pro/con table about ${subject}: ${entry}`);
+    let proLabeled = pros.map(entry => `PRO: ${entry}`);
+    proLabeled = proLabeled.slice(1, proLabeled.length);
+
+    let conLabeled = cons.map(entry => `CON: ${entry}`);
+    conLabeled = conLabeled.slice(1, conLabeled.length);
+    const prompts = proLabeled.concat(conLabeled);
+    console.log(prompts);
     return prompts;
 }
 function getTableColumnValues(tableId, columnIndex) {
@@ -82,14 +192,13 @@ function getTableColumnValues(tableId, columnIndex) {
 async function getMeaning(entry, type) {
     const subject = document.getElementById("subject-entry").value;
     const sysPrompt = `The following is a ${type.toUpperCase()} entry in a pro/con table about ${subject}. Generate a 1-sentence description of its meaning and significance.`;
-
     const response = await fetchOpenAICompletion(sysPrompt, entry);
     return response.choices[0].message.content.trim();
 }
 
 async function fetchOpenAICompletion(sysPrompt, userPrompt) {
     let messages = [{ role: "system", content: sysPrompt }];
-    
+
     if (userPrompt) {
         if (Array.isArray(userPrompt)) {
             userPrompt.forEach(prompt => messages.push({ role: "user", content: prompt }));
@@ -119,14 +228,14 @@ async function fetchOpenAICompletion(sysPrompt, userPrompt) {
     const data = await response.json();
     return data;
 }
-document.getElementById("reset-button").addEventListener("click", function(){
+document.getElementById("reset-button").addEventListener("click", function () {
     // Reset subject
     document.getElementById("subject-entry").value = "";
-    
+
     // Reset pros and cons
     document.getElementById("pro-entry").value = "";
     document.getElementById("con-entry").value = "";
-    
+
     // Reset tables
     document.getElementById("pros-table").innerHTML = `<tr>
       <th>Pro</th>
@@ -136,9 +245,8 @@ document.getElementById("reset-button").addEventListener("click", function(){
       <th>Con</th>
       <th>Description</th>
     </tr>`;
-    
+
     // Reset insights and questions
     document.getElementById("insights-text").value = "";
     document.getElementById("questions-text").value = "";
-  });
-  
+});
