@@ -1,8 +1,5 @@
-
-var API_KEY = "ENTER KEY HERE"
-const API_URL = "https://api.openai.com/v1/engines/text-davinci-003/completions";
-// Fetch API Key from Local Storage
-API_KEY = localStorage.getItem('API_KEY');
+var API_KEY = localStorage.getItem('API_KEY');
+const API_URL = "https://api.openai.com/v1/chat/completions";
 
 // Get the modal
 let modal = document.getElementById("myModal");
@@ -25,8 +22,9 @@ const testAPIKey = async (key) => {
                 'Authorization': `Bearer ${key}`
             },
             body: JSON.stringify({
-                'prompt': 'Translate the following English text to French: "{text: "Hello, world!"}"',
-                'max_tokens': 60
+                'messages': [{'role': 'system', 'content': 'Translate the following English text to French: "Hello, world!"'}],
+                'max_tokens': 60,
+                'model': 'gpt-4'
             })
         });
 
@@ -54,6 +52,7 @@ const promptForAPIKey = async () => {
         } else {
             // If the key is not valid, clear the input field and keep the modal open
             document.getElementById("APIKeyInput").value = '';
+            alert('Invalid API Key. Please try again.');
         }
     });
 };
@@ -68,6 +67,7 @@ if (API_KEY) {
 } else {
     promptForAPIKey();
 }
+
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("add-pro-button").addEventListener("click", function () {
         handleInput("pro");
@@ -78,6 +78,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     document.getElementById("auto-fill").addEventListener("click", function () {
         give3ProsAndCons();
+    });
+    document.getElementById("reset-button").addEventListener("click", function () {
+        resetAll();
     });
 });
 
@@ -208,11 +211,11 @@ async function fetchOpenAICompletion(sysPrompt, userPrompt) {
     }
 
     const requestBody = {
-        model: "gpt-3.5-turbo",
+        model: "gpt-4",
         messages: messages,
     };
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch(API_URL, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -228,7 +231,8 @@ async function fetchOpenAICompletion(sysPrompt, userPrompt) {
     const data = await response.json();
     return data;
 }
-document.getElementById("reset-button").addEventListener("click", function () {
+
+function resetAll() {
     // Reset subject
     document.getElementById("subject-entry").value = "";
 
@@ -247,6 +251,6 @@ document.getElementById("reset-button").addEventListener("click", function () {
     </tr>`;
 
     // Reset insights and questions
-    document.getElementById("insights-text").value = "";
-    document.getElementById("questions-text").value = "";
-});
+    document.getElementById("insights-text").innerText = "";
+    document.getElementById("questions-text").innerText = "";
+}
