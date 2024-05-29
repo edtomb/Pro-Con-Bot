@@ -57,7 +57,7 @@ const promptForAPIKey = async () => {
     });
 };
 
-// Test the initial API key, if exists
+// Check if API key exists in local storage
 if (API_KEY) {
     testAPIKey(API_KEY).then((isValid) => {
         if (!isValid) {
