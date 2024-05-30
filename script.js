@@ -120,7 +120,7 @@ function insertIntoTable(type, entry, meaning) {
 }
 
 async function updateInsights(pros, cons) {
-    const sysPrompt = `Given the pros and cons of ${document.getElementById("subject-entry").value}, provide two insights. in the form: \n1. [insight 1] \n 2. [insight 2]`;
+    const sysPrompt = `Given the pros and cons of ${document.getElementById("subject-entry").value}, provide three insights. in the form: \n1. [insight 1] \n 2. [insight 2]\n 3. [insight 3]`;
     const userPrompts = getUserPrompts(pros, cons);
     const response = await fetchOpenAICompletion(sysPrompt, userPrompts.toString());
 
@@ -128,7 +128,7 @@ async function updateInsights(pros, cons) {
 }
 
 async function updateQuestions(pros, cons) {
-    const sysPrompt = `Given the pros and cons of ${document.getElementById("subject-entry").value}, generate two questions. in the form: \n1. [question 1] \n 2. [question 2]`;
+    const sysPrompt = `Given the pros and cons of ${document.getElementById("subject-entry").value}, generate three questions. in the form: \n1. [question 1] \n 2. [question 2] \n 3. [question 3]`;
     const userPrompts = getUserPrompts(pros, cons);
     const response = await fetchOpenAICompletion(sysPrompt, userPrompts.toString());
 
